@@ -13,14 +13,14 @@ use std::ops::{
 };
 
 #[derive(Default)]
-struct Vector3D {
-    x: f64,
-    y: f64,
-    z: f64,
+pub struct Vector3D {
+    pub x: f64,
+    pub y: f64,
+    pub z: f64,
 }
 
 impl Vector3D {
-    fn new(x: f64, y: f64, z: f64) -> Self {
+    pub fn new(x: f64, y: f64, z: f64) -> Self {
         Vector3D { x, y, z }
     }
 
