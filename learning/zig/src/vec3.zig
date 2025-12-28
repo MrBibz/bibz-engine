@@ -2,7 +2,7 @@ const std = @import("std");
 const expect = std.testing.expect;
 const sqrt = std.math.sqrt;
 
-const Vec3 = struct {
+pub const Vec3 = struct {
     x: f32,
     y: f32,
     z: f32,
@@ -61,12 +61,22 @@ const Vec3 = struct {
         return Vec3.new(-self.x, -self.y, -self.z);
     }
 
-    fn new(x: f32, y: f32, z: f32) Vec3 {
+    pub fn new(x: f32, y: f32, z: f32) Vec3 {
         return Vec3{ .x = x, .y = y, .z = z };
     }
 
     fn norm(self: Vec3) Vec3 {
         return self.div(self.mag());
+    }
+
+    fn sub(self: Vec3, other: Vec3) Vec3 {
+        return Vec3.new(self.x - other.x, self.y - other.y, self.z - other.z);
+    }
+
+    fn sub_assign(self: *Vec3, other: Vec3) void {
+        self.x -= other.x;
+        self.y -= other.y;
+        self.z -= other.z;
     }
 };
 
@@ -145,4 +155,22 @@ test "norm" {
     const N = V.norm();
 
     try expect(approx_f32(N.mag(), 1));
+}
+
+test "sub" {
+    const V1 = Vec3.new(5, 7, 9);
+    const V2 = Vec3.new(4, 5, 6);
+    const EXPECTED = Vec3.new(1, 2, 3);
+
+    try expect(EXPECTED.equals(V1.sub(V2)));
+}
+
+test "sub_assign" {
+    var v1 = Vec3.new(5, 7, 9);
+    const V2 = Vec3.new(4, 5, 6);
+    const EXPECTED = Vec3.new(1, 2, 3);
+
+    v1.sub_assign(V2);
+
+    try expect(EXPECTED.equals(v1));
 }
