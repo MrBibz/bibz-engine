@@ -37,6 +37,15 @@ pub const Vec3 = struct {
             self.z == other.z;
     }
 
+    fn get(self: Vec3, idx: u8) Vec3Error!f32 {
+        return switch (idx) {
+            0 => self.x,
+            1 => self.y,
+            2 => self.z,
+            else => Vec3Error.IndexOutOfBounds,
+        };
+    }
+
     fn mag(self: Vec3) f32 {
         return sqrt(self.x * self.x +
             self.y * self.y +
@@ -62,7 +71,7 @@ pub const Vec3 = struct {
     }
 
     pub fn new(x: f32, y: f32, z: f32) Vec3 {
-        return Vec3{ .x = x, .y = y, .z = z };
+        return Vec3{ .x = @as(f32, x), .y = @as(f32, y), .z = @as(f32, z) };
     }
 
     fn norm(self: Vec3) Vec3 {
@@ -79,6 +88,8 @@ pub const Vec3 = struct {
         self.z -= other.z;
     }
 };
+
+const Vec3Error = error{IndexOutOfBounds};
 
 const EPS_F32: f32 = 1e-6;
 
@@ -119,6 +130,13 @@ test "div_assign" {
     v.div_assign(2);
 
     try expect(EXPECTED.equals(v));
+}
+
+test "get" {
+    const V = Vec3.new(1, 2, 3);
+    const EXPECTED = Vec3.new(try V.get(0), try V.get(1), try V.get(2));
+
+    try expect(EXPECTED.equals(V));
 }
 
 test "mag" {

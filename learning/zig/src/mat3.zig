@@ -22,6 +22,22 @@ const Mat3 = struct {
         };
     }
 
+    fn get(self: Mat3, col: u8, row: u8) Mat3Error!f32 {
+        if (col < 0 or col > 2 or row < 0 or row > 2) return Mat3Error.ColumnOutOfBounds;
+
+        return self.get_col(col).get(row);
+    }
+
+    fn get_col(self: Mat3, col: u8) Mat3Error!Vec3 {
+        if (col < 0 or col > 2) return Mat3Error.ColumnOutOfBounds;
+
+        return Vec3.new(
+            self.n[col][0],
+            self.n[col][1],
+            self.n[col][2],
+        );
+    } 
+
     fn new(n00: f32, n01: f32, n02: f32, n10: f32, n11: f32, n12: f32, n20: f32, n21: f32, n22: f32) Mat3 {
         return Mat3{
             .n = .{
@@ -32,6 +48,10 @@ const Mat3 = struct {
         };
     }
 };
+
+const Mat3Error = error {
+    ColumnOutOfBounds
+}
 
 test "from_vectors" {
     const V1 = Vec3.new(1, 2, 3);
